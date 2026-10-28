@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+
+# Frontend / Electron
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+frontend/out/
+frontend/release/
+
+# Local data and generated backups
+backend/backups/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*.local.json
