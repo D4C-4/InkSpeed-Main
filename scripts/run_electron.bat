@@ -1,22 +1,24 @@
 @echo off
-echo Starting InkSpeed Desktop App (Electron)...
-cd /d "%~dp0"
+setlocal
+cd /d "%~dp0.."
+echo Starting InkSpeed desktop app (Electron)...
 if not exist "backend\main.py" (
-    echo [ERROR] Please run this script from the InkSpeed project root.
+    echo [ERROR] backend\main.py was not found. Run scripts\setup.bat first.
     pause
     exit /b 1
 )
 if not exist "backend\.venv\Scripts\python.exe" (
-    echo [ERROR] Virtual environment not found. Run setup.bat first.
+    echo [ERROR] backend\.venv not found. Run scripts\setup.bat first.
     pause
     exit /b 1
 )
 if not exist "frontend\node_modules" (
-    echo [ERROR] Frontend dependencies not found. Run setup.bat first.
+    echo [ERROR] frontend\node_modules not found. Run scripts\setup.bat first.
     pause
     exit /b 1
 )
-echo Make sure MySQL is running in XAMPP before continuing!
+echo Make sure MySQL is running in the XAMPP Control Panel.
+echo Electron starts the backend (port 5000) and Vite (port 5174) itself.
 echo.
 cd frontend
 call npm run electron

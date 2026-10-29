@@ -1,8 +1,36 @@
+import logging
 import os
 from pathlib import Path
 
 import mysql.connector
 
+
+logger = logging.getLogger(__name__)
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+class DatabaseInitializationError(RuntimeError):
+    """Raised when the database cannot be prepared without risking user data."""
+
+
+def _load_env_file() -> None:
+    """Load the project's .env file without overwriting real environment variables."""
+    for env_path in (PROJECT_ROOT / ".env", PROJECT_ROOT / "backend" / ".env"):
+        if not env_path.is_file():
+            continue
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = value
+
+
+_load_env_file()
 
 DB_NAME = os.getenv("MYSQL_DATABASE", "inkspeed_db")
 
@@ -17,8 +45,28 @@ def connect_db():
     )
 
 
-def initialize_database():
-    """Create the application database and tables if they do not exist."""
+def initialize_database() -> None:
+    """Create the application database and tables if they do not exist.
+
+    The operation is additive and safe to rerun. It never drops or rewrites an
+    existing table: when MariaDB cannot open a table (for example error 1932,
+    "doesn't exist in engine"), initialization stops with recovery guidance
+    instead of silently pretending the table was recreated.
+    """
+    try:
+        _initialize_database()
+    except DatabaseInitializationError:
+        raise
+    except mysql.connector.Error as error:
+        message = (
+            f"Database initialization failed for `{DB_NAME}`: {error}. "
+            "No existing tables were dropped or recreated."
+        )
+        logger.exception(message)
+        raise DatabaseInitializationError(message) from error
+
+
+def _initialize_database() -> None:
     conn = mysql.connector.connect(
         host=os.getenv("MYSQL_HOST", "127.0.0.1"),
         port=int(os.getenv("MYSQL_PORT", "3306")),
@@ -27,6 +75,7 @@ def initialize_database():
     )
     cursor = conn.cursor()
     try:
+        logger.info("Preparing database `%s`.", DB_NAME)
         cursor.execute(
             f"""
             CREATE DATABASE IF NOT EXISTS `{DB_NAME}`
@@ -35,6 +84,9 @@ def initialize_database():
             """
         )
         cursor.execute(f"USE `{DB_NAME}`")
+        # MariaDB lists damaged InnoDB tables in SHOW TABLES, but their engine
+        # is NULL and CREATE TABLE IF NOT EXISTS is a silent no-op for them.
+        _raise_if_tables_are_broken(cursor)
         schema_path = Path(__file__).with_name("schema.sql")
         schema = schema_path.read_text(encoding="utf-8")
         for statement in schema.split(";"):
@@ -115,11 +167,58 @@ def initialize_database():
             cursor.execute(
                 "ALTER TABLE achievements ADD UNIQUE KEY uq_achievements_code (code)"
             )
+        # Recheck after the schema pass so a table that became unreadable is
+        # reported with the same clear message instead of a raw SQL error.
+        _raise_if_tables_are_broken(cursor)
         _ensure_project_extensions(cursor)
         conn.commit()
+        logger.info("Database `%s` is ready.", DB_NAME)
     finally:
         cursor.close()
         conn.close()
+
+
+def _broken_tables(cursor) -> list[str]:
+    """Return tables MariaDB cannot open (the error-1932 state).
+
+    ``information_schema.tables.engine`` is evaluated lazily by MariaDB and can
+    still report ``InnoDB`` for a damaged table when filtered, so
+    ``SHOW TABLE STATUS`` is used instead: it reports ``Engine = NULL`` and a
+    "doesn't exist in engine" comment for the broken table.
+    """
+    cursor.execute(f"SHOW TABLE STATUS FROM `{DB_NAME}`")
+    broken = []
+    for row in cursor.fetchall():
+        name, engine = row[0], row[1]
+        comment = str(row[17]).strip().upper() if len(row) > 17 else ""
+        if engine is None and comment != "VIEW":
+            broken.append(str(name))
+    return sorted(broken)
+
+
+def _raise_if_tables_are_broken(cursor) -> None:
+    broken = _broken_tables(cursor)
+    if not broken:
+        return
+    names = ", ".join(f"`{name}`" for name in broken)
+    cursor.execute("SELECT @@datadir")
+    database_dir = Path(str(cursor.fetchone()[0])) / DB_NAME
+    message = (
+        f"MariaDB cannot open table(s) {names} in database `{DB_NAME}` "
+        '(error 1932: "doesn\'t exist in engine"). The files may still exist '
+        "on disk, but the InnoDB tablespace is not usable.\n"
+        f"Database folder: {database_dir}\n"
+        "InkSpeed stopped before changing anything. CREATE TABLE IF NOT EXISTS "
+        "cannot repair a broken tablespace, and dropping, discarding, or "
+        "importing a tablespace here would risk the existing data.\n"
+        "Recovery: stop MySQL in the XAMPP Control Panel, keep the damaged "
+        "files, and restore the database from a SQL dump or from the backup "
+        "folder made before the corruption. If no backup is usable, create a "
+        "new database and re-import backend/database/schema.sql; keep the "
+        "damaged files until the data has been reviewed."
+    )
+    logger.error(message)
+    raise DatabaseInitializationError(message)
 
 
 def _table_exists(cursor, table: str) -> bool:
@@ -169,6 +268,9 @@ def _foreign_key_exists(cursor, table: str, column: str, referenced_table: str) 
 
 def _ensure_project_extensions(cursor) -> None:
     """Apply additive lookup/security schema changes to fresh and existing databases."""
+    # A broken InnoDB tablespace is invisible to CREATE TABLE IF NOT EXISTS.
+    # Check before touching challenge_categories so the real problem is reported.
+    _raise_if_tables_are_broken(cursor)
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS challenge_categories (
@@ -207,6 +309,16 @@ def _ensure_project_extensions(cursor) -> None:
         cursor.execute("ALTER TABLE user_roles MODIFY user_id INT NULL")
     if _column_exists(cursor, "user_roles", "role_name"):
         cursor.execute("ALTER TABLE user_roles MODIFY role_name VARCHAR(20) NOT NULL")
+    # Add the lookup columns before the UPDATE statements below reference them.
+    # schema.sql does not create them, so a fresh database needs this first.
+    for table, column, definition in (
+        ("users", "password_hash", "VARCHAR(255) NULL"),
+        ("users", "role_id", "INT NULL"),
+        ("challenges", "category_id", "INT NULL"),
+        ("results", "mode_id", "INT NULL"),
+    ):
+        if not _column_exists(cursor, table, column):
+            cursor.execute(f"ALTER TABLE `{table}` ADD COLUMN `{column}` {definition}")
     cursor.execute(
         """
         UPDATE users u
@@ -251,14 +363,6 @@ def _ensure_project_extensions(cursor) -> None:
     )
     if not _index_exists(cursor, "game_modes", "uq_game_modes_name"):
         cursor.execute("ALTER TABLE game_modes ADD UNIQUE KEY uq_game_modes_name (mode_name)")
-    for table, column, definition in (
-        ("users", "password_hash", "VARCHAR(255) NULL"),
-        ("users", "role_id", "INT NULL"),
-        ("challenges", "category_id", "INT NULL"),
-        ("results", "mode_id", "INT NULL"),
-    ):
-        if not _column_exists(cursor, table, column):
-            cursor.execute(f"ALTER TABLE `{table}` ADD COLUMN `{column}` {definition}")
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS personal_bests (

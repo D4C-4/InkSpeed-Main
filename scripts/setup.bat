@@ -1,99 +1,122 @@
 @echo off
+setlocal
+cd /d "%~dp0.."
 echo ========================================
 echo InkSpeed Setup Helper
 echo ========================================
 echo.
+echo Project folder: %CD%
+echo.
 
-REM Check if running from project root
 if not exist "backend\main.py" (
-    echo [ERROR] Please run this script from the InkSpeed project root directory.
-    echo         Current directory: %CD%
+    echo [ERROR] backend\main.py was not found.
+    echo         Run this script from inside the extracted InkSpeed folder:
+    echo         double-click scripts\setup.bat
     pause
     exit /b 1
 )
 
-echo [1/5] Checking Python installation...
-py --version >nul 2>&1
+echo [1/5] Checking Python 3.11 or newer...
+set "PYTHON=python"
+python --version >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Python is not found or not in PATH.
-    echo         Please install Python 3.10+ from https://www.python.org/
-    echo         Make sure to check "Add Python to PATH" during installation.
+    py -3 --version >nul 2>&1
+    if %ERRORLEVEL% NEQ 0 (
+        echo [ERROR] Python is not found on PATH.
+        echo         Install Python 3.11 or newer from https://www.python.org/downloads/
+        echo         During installation, tick "Add python.exe to PATH".
+        pause
+        exit /b 1
+    )
+    set "PYTHON=py -3"
+)
+%PYTHON% -c "import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)"
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] InkSpeed needs Python 3.11 or newer. Found:
+    %PYTHON% --version
     pause
     exit /b 1
 )
-py --version
+%PYTHON% --version
 
 echo.
-echo [2/5] Checking Node.js installation...
+echo [2/5] Checking Node.js 20.19 or 22.12+...
 node --version >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Node.js is not found or not in PATH.
-    echo         Please install Node.js LTS from https://nodejs.org/
+    echo [ERROR] Node.js is not found on PATH.
+    echo         Install the Node.js LTS release from https://nodejs.org/
+    pause
+    exit /b 1
+)
+node -e "const [a,b]=process.versions.node.split('.').map(Number);process.exit((a===20&&b>=19)||(a===22&&b>=12)||a>22?0:1)"
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] This Vite version needs Node.js 20.19+ or 22.12+. Found:
+    node --version
     pause
     exit /b 1
 )
 node --version
-npm --version
+call npm --version
 
 echo.
 echo [3/5] Creating Python virtual environment...
-if exist "backend\.venv" (
+if exist "backend\.venv\Scripts\python.exe" (
     echo [INFO] Virtual environment already exists. Skipping creation.
 ) else (
-    py -m venv backend\.venv
+    %PYTHON% -m venv backend\.venv
     if %ERRORLEVEL% NEQ 0 (
-        echo [ERROR] Failed to create virtual environment.
+        echo [ERROR] Failed to create backend\.venv.
         pause
         exit /b 1
     )
-    echo [OK] Virtual environment created.
+    echo [OK] Virtual environment created at backend\.venv
 )
 
 echo.
-echo [4/5] Installing backend dependencies...
-backend\.venv\Scripts\python.exe -m pip install --upgrade pip >nul 2>&1
+echo [4/5] Installing Python dependencies...
+backend\.venv\Scripts\python.exe -m pip install --upgrade pip
 backend\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Failed to install backend dependencies.
     pause
     exit /b 1
 )
-echo [OK] Backend dependencies installed.
+echo [OK] Python dependencies installed.
 
 echo.
 echo [5/5] Checking frontend dependencies...
 if exist "frontend\node_modules" (
-    echo [INFO] Node modules already exist. Skipping npm install.
-    echo        If you need to update dependencies, run: cd frontend && npm install
+    echo [INFO] frontend\node_modules already exists. Skipping npm ci.
 ) else (
-    echo [INFO] Installing frontend dependencies (this may take a few minutes)...
-    cd frontend
-    call npm install
+    echo [INFO] Installing frontend dependencies from package-lock.json...
+    pushd frontend
+    call npm ci
     if %ERRORLEVEL% NEQ 0 (
-        echo [ERROR] Failed to install frontend dependencies.
-        cd ..
+        echo [ERROR] npm ci failed. Check the messages above.
+        popd
         pause
         exit /b 1
     )
-    cd ..
+    popd
     echo [OK] Frontend dependencies installed.
 )
 
 echo.
 echo ========================================
-echo Setup Complete!
+echo Setup complete
 echo ========================================
 echo.
-echo NEXT STEPS (One-time database setup):
-echo 1. Start XAMPP Control Panel and start MySQL
-echo 2. Open http://localhost/phpmyadmin and create database 'inkspeed_db'
-echo 3. Import backend\database\schema.sql into the database
-echo    (Or just start the backend - it will auto-initialize)
+echo NEXT STEPS:
+echo 1. In XAMPP Control Panel, click Start next to MySQL and wait for it
+echo    to turn green. Port 3306 must be free.
+echo 2. In this project folder, create the .env file:
+echo       copy .env.example .env
+echo    The default MYSQL_DATABASE=inkspeed_db is correct for a new computer.
+echo 3. Start the app:
+echo       scripts\run_electron.bat
+echo    The first backend start creates the database, tables, and all
+echo    78 starter challenges automatically.
 echo.
-echo TO RUN THE APPLICATION:
-echo - Option 1 (Two terminals): See README.md for detailed instructions
-echo - Option 2 (Electron): Start MySQL in XAMPP, then run run_electron.bat
-echo.
-echo See README.md for complete step-by-step instructions.
+echo See README.md for the full walkthrough and troubleshooting.
 echo.
 pause

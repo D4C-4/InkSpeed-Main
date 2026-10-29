@@ -1,372 +1,551 @@
 # InkSpeed
 
-InkSpeed is a typing-speed application with three modes: **Classic**, **Memory Rush**, and **Key Chaos**. It uses a React/TypeScript frontend (with Vite and optional Electron), a Python Flask API backend, and **MySQL/MariaDB** for persistent data storage.
+InkSpeed is a typing-speed game with three modes:
 
-## Table of Contents
+- **Classic** — type a passage before the timer runs out.
+- **Memory Rush** — memorize a passage, then type it from memory.
+- **Key Chaos** — type while the keys are scrambled.
 
-- [What does InkSpeed do?](#what-does-inkspeed-do)
-- [Verified Features](#verified-features)
-- [Technology Stack](#technology-stack)
-- [Requirements](#requirements)
-- [Important Files and Project Structure](#important-files-and-project-structure)
-- [Downloading the Project (ZIP Method - Recommended for Presentations)](#downloading-the-project-zip-method---recommended-for-presentations)
-- [Extracting and Opening the Project](#extracting-and-opening-the-project)
-- [Setting Up Prerequisites](#setting-up-prerequisites)
-- [Step 1: Create and Activate Python Virtual Environment](#step-1-create-and-activate-python-virtual-environment)
-- [Step 2: Install Backend Dependencies](#step-2-install-backend-dependencies)
-- [Step 3: Set Up Environment Configuration](#step-3-set-up-environment-configuration)
-- [Step 4: Install and Start XAMPP (MySQL/MariaDB)](#step-4-install-and-start-xampp-mysqlmariadb)
-- [Step 5: Create and Import the Database](#step-5-create-and-import-the-database)
-- [Step 6: Install Frontend Dependencies](#step-6-install-frontend-dependencies)
-- [Step 7: Run the Application](#step-7-run-the-application)
-- [Running as a Desktop App (Optional)](#running-as-a-desktop-app-optional)
-- [Everyday Startup (After First-Time Setup)](#everyday-startup-after-first-time-setup)
-- [Where Data is Stored](#where-data-is-stored)
-- [Stopping the Application Safely](#stopping-the-application-safely)
-- [Troubleshooting](#troubleshooting)
-- [Common Questions](#common-questions)
-- [Known Limitations](#known-limitations)
-- [Additional Notes](#additional-notes)
+It uses a React 19 / TypeScript frontend (Vite 8, TanStack Router) with an optional Electron desktop window, a Python Flask API, and a local MySQL/MariaDB database managed through XAMPP.
 
-## What does InkSpeed do?
+The application ships with **78 typing challenges across 8 categories** (`Proverbs`, `Nature`, `Technology`, `Literature`, `Science`, `Education`, `Health`, `Business`). On a new computer they are created automatically the first time the backend starts. No database files need to be copied from another machine.
 
-InkSpeed lets you practice and test your typing speed across different game modes. It tracks your results, saves personal bests per mode, and awards achievements as you improve. User profiles, challenges, results, and round-by-round details are all persisted in a MySQL/MariaDB database managed through XAMPP.
+---
 
-## Verified Features
+## 1. What you need
 
-- **Three Game Modes**: Classic (timed test), Memory Rush (memorize then type blind), Key Chaos (type with scrambled keys)
-- **User Management**: Create, rename, and switch between users
-- **Results Tracking**: WPM, accuracy, errors, score, and round-by-round details
-- **Achievements System**: Unlock achievements based on your performance
-- **Personal Bests**: Track your best score per mode
-- **Challenge System**: Multiple difficulty levels and categories
-- **Leaderboard Support**: View top scores per mode
-- **Desktop App Option**: Run via Electron
-
-## Technology Stack
-
-| Component | Technology | Notes |
+| Software | Supported version | Verified with |
 | --- | --- | --- |
-| Frontend | React 19, TypeScript, Vite 8, TanStack Router/Start | Located in `frontend/` |
-| UI Components | Tailwind CSS 4, Radix UI | Styled with Tailwind |
-| Backend API | Python 3.10+, Flask 3.0 | Located in `backend/` (`api_server.py`, `main.py`) |
-| Database | MySQL/MariaDB (via XAMPP) | Port 3306 by default, database name `inkspeed_db` |
-| Desktop | Electron 38 | Optional desktop launcher in `frontend/electron/main.cjs` |
+| Windows | Windows 10 or Windows 11, 64-bit | Windows 11 |
+| Python | **3.11 or newer** | Python 3.14.8 |
+| Node.js | **20.19.x LTS or 22.12+** (Vite 8 requirement) | Node.js 24.12.0, npm 11.6.2 |
+| XAMPP | Any recent version with MySQL/MariaDB | XAMPP with MariaDB 10.4.32 |
+| VS Code | Latest | Latest |
 
-## Requirements
+Notes:
 
-Before you begin, install the following on your Windows laptop:
+- Python 3.11+ is required because the code uses `enum.StrEnum`.
+- Node.js 18 and early 20.x **do not work** with the installed Vite 8.1.5. Install the current Node.js LTS from <https://nodejs.org/>.
+- XAMPP provides both MySQL/MariaDB (required) and Apache (only needed for phpMyAdmin).
+- Git is **not** required. The ZIP download below is enough.
 
-| Software | Minimum Version | Download Link | Notes |
-| --- | --- | --- | --- |
-| **Python** | 3.10 or newer | [python.org/downloads](https://www.python.org/downloads/) | During installation, check "Add Python to PATH". |
-| **Node.js** | LTS (v18+ recommended) | [nodejs.org](https://nodejs.org/) | npm comes bundled with Node.js. |
-| **XAMPP** | Recent version with MariaDB/MySQL | [apachefriends.org/download.html](https://www.apachefriends.org/download.html) | Required for the MySQL database. |
-| **Visual Studio Code** | Latest | [code.visualstudio.com](https://code.visualstudio.com/) | Recommended for opening and running the project. |
+### Ports used
 
-## Important Files and Project Structure
+| Port | Used by | Started by |
+| --- | --- | --- |
+| 3306 | MySQL/MariaDB | XAMPP Control Panel |
+| 5000 | Flask backend API | Electron, or `backend\main.py` |
+| 5173 | Vite dev server (browser mode) | `npm run dev` |
+| 5174 | Vite dev server (Electron mode) | Electron launcher |
+| 80 / 443 | Apache / phpMyAdmin | XAMPP Control Panel |
+
+Only one copy of the app should run at a time.
+
+---
+
+## 2. Download the correct repository as a ZIP
+
+1. Open this address in a web browser:
+   **<https://github.com/D4C-4/InkSpeed-Main>**
+2. Click the green **Code** button.
+3. Click **Download ZIP**.
+4. The file downloads as `InkSpeed-Main-main.zip` (usually into `Downloads`).
+
+> Download the ZIP from `D4C-4/InkSpeed-Main`, not from any other InkSpeed repository. This is the presentation copy.
+
+---
+
+## 3. Extract the ZIP
+
+1. Open **File Explorer** and go to your **Downloads** folder.
+2. Right-click `InkSpeed-Main-main.zip` → **Extract All…**
+3. Extract it to a simple local folder, for example `C:\InkSpeed-Main-main`.
+   - Avoid extracting into `C:\Program Files`, and do not run the app from inside the ZIP preview.
+4. Open the extracted folder. Its root must directly contain:
 
 ```text
-InkSpeed-main/
-├── backend/                    # Python Flask API
-│   ├── api_server.py          # Main API server (Flask)
-│   ├── main.py                # Backend entry point
-│   ├── requirements.txt       # Python dependencies
-│   ├── database/              # Database connection, schema, and manager
-│   │   ├── connection.py      # MySQL connection & auto-initialization
-│   │   ├── database_manager.py# Database operations
-│   │   ├── schema.sql         # Base database schema
-│   │   └── seed.sql           # Sample seed data
-│   ├── models/                # Data models
-│   └── tests/                 # Backend tests
-├── frontend/                  # React frontend
-│   ├── package.json           # Node dependencies & scripts
-│   ├── electron/              # Electron desktop app
-│   │   └── main.cjs
-│   └── src/                   # Frontend source code
-├── .env.example               # Example environment variables
-├── .gitignore
-└── README.md
+README.md
+.env.example
+backend\
+frontend\
+database\
+scripts\
 ```
 
-**Key entry points:**
-- **Backend API**: `backend/main.py` (starts Flask on `http://127.0.0.1:5000`)
-- **Frontend Dev Server**: `frontend/package.json` script `dev` (starts Vite, typically on `http://localhost:5173`)
-- **Electron**: `frontend/electron/main.cjs` (launches both backend and frontend)
+If you see another folder inside the extracted folder (for example `InkSpeed-Main-main\InkSpeed-Main-main`), open the inner folder that contains `backend\main.py`.
 
-## Downloading the Project (ZIP Method - Recommended for Presentations)
+---
 
-If you're downloading this for a presentation on another laptop (no Git knowledge required):
+## 4. Open the folder in VS Code
 
-1. Go to the GitHub repository in your web browser.
-2. Click the green **"Code"** button near the top of the repository.
-3. Select **"Download ZIP"** from the dropdown menu.
-4. The ZIP file (e.g., `InkSpeed-main.zip`) will download to your default Downloads folder.
+1. Open **Visual Studio Code**.
+2. **File → Open Folder…**
+3. Select the folder from step 3 (the one containing `backend`, `frontend`, and `README.md`).
+4. **Terminal → New Terminal**. A **PowerShell** terminal opens in the project root.
 
-> **Note:** Downloading as ZIP is different from cloning with `git clone`. The ZIP method is what this guide uses and requires no Git installation.
-
-## Extracting and Opening the Project
-
-1. **Extract the ZIP:**
-   - Navigate to your Downloads folder
-   - Right-click `InkSpeed-main.zip` → **Extract All...**
-   - Choose a destination (e.g., `C:\Users\YourName\Documents\` or just extract to a simple location like `C:\InkSpeed\`)
-   - Click **Extract**
-
-2. **Find the correct folder to open:**
-   - After extraction, you'll see a folder (commonly named `InkSpeed-main` or `InkSpeed-main-main`)
-   - **Open THIS folder** in VS Code - not the parent folder containing it
-   - To verify it's correct, this folder must contain `README.md`, `backend/`, `frontend/`, and `.env.example` at the root level
-
-3. **Open in Visual Studio Code:**
-   - Open VS Code
-   - Go to **File → Open Folder...**
-   - Select the extracted project folder (e.g., `C:\InkSpeed-main`)
-   - Click **Select Folder**
-
-4. **Open a terminal:**
-   - In VS Code, go to **Terminal → New Terminal**
-   - This will open a PowerShell terminal in the project root
-   - Verify you're in the correct directory by typing: `pwd` or checking the path shown. You should see the path to your InkSpeed folder.
-
-## Setting Up Prerequisites
-
-### Verify Installations
-
-Open a terminal in the project root and verify your installations:
+Verify the location before continuing:
 
 ```powershell
-py --version
+Get-Location
+Test-Path .\backend\main.py
+```
+
+Expected result: the path ends with your extracted folder name, and `Test-Path` prints `True`.
+
+All PowerShell commands below are run **from the project root** unless a step says otherwise.
+
+---
+
+## 5. Create and activate the Python virtual environment
+
+In the **VS Code PowerShell terminal** (project root):
+
+```powershell
+python -m venv backend\.venv
+.\backend\.venv\Scripts\Activate.ps1
+```
+
+Expected result: the prompt now begins with `(.venv)`.
+
+If PowerShell blocks the activation script:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\backend\.venv\Scripts\Activate.ps1
+```
+
+If `python` opens the Microsoft Store or is not found, install Python 3.11+ from <https://www.python.org/downloads/> and tick **Add python.exe to PATH**. You can also use `py -3` instead of `python` for the commands below.
+
+> The virtual environment must live at exactly `backend\.venv`. The Electron launcher starts `backend\.venv\Scripts\python.exe`; an environment created anywhere else will not be found.
+
+---
+
+## 6. Install Python dependencies
+
+With `(.venv)` active, from the project root:
+
+```powershell
+python -m pip install --upgrade pip
+python -m pip install -r backend\requirements.txt
+```
+
+Expected result: the last line contains `Successfully installed ...` (or `Requirement already satisfied`).
+
+This installs Flask, `mysql-connector-python`, and pytest. No additional `.env` library is needed — the backend loads `.env` itself.
+
+---
+
+## 7. Install frontend dependencies
+
+From the project root:
+
+```powershell
+cd .\frontend
+npm ci
+cd ..
+```
+
+Expected result: npm finishes without `ERESOLVE` errors and creates `frontend\node_modules`.
+
+`npm ci` installs exactly the committed `frontend\package-lock.json`. Do not delete that lockfile. If `npm ci` reports that the lockfile is out of sync, run `npm install`, then `cd ..`.
+
+Check the versions:
+
+```powershell
 node --version
 npm --version
 ```
 
-- `py --version` should show Python 3.10+
-- `node --version` and `npm --version` should show versions
+Node must print `v20.19.x` (the 20.x LTS line), `v22.12.x` or newer, or `v24.x`. Node 18, Node 21, and Node 22.0–22.11 are not supported by this Vite version.
 
-If any command is not recognized, reinstall that software and make sure it's added to PATH (especially Python).
+---
 
-## Step 1: Create and Activate Python Virtual Environment
+## 8. Install and start XAMPP
 
-From the **project root** in PowerShell:
+1. Install XAMPP from <https://www.apachefriends.org/download.html> if it is not already installed.
+2. Open **XAMPP Control Panel** from the Windows Start Menu.
+3. Click **Start** next to **MySQL**. Wait for the module to turn green and show a PID.
+4. Click **Start** next to **Apache** if you want to use phpMyAdmin in a browser.
 
-```powershell
-py -m venv backend\.venv
+Default XAMPP MySQL settings (the app assumes these unless `.env` says otherwise):
+
+```text
+Host:     127.0.0.1
+Port:     3306
+User:     root
+Password: (empty)
 ```
 
-Activate the virtual environment:
+If port 3306 is already occupied, see [Troubleshooting](#15-troubleshooting). Do not click **Stop** while the game is running.
+
+---
+
+## 9. Create the `.env` file
+
+In the **VS Code PowerShell terminal**, from the project root:
 
 ```powershell
-.\backend\.venv\Scripts\Activate.ps1
+Copy-Item .env.example .env
+Get-Content .env
 ```
 
-> **If you get a PowerShell execution policy error:** Run this command once to allow local scripts (only for your user): 
-> ```powershell
-> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-> ```
-> Then try activating again.
+Expected result: the file lists the five `MYSQL_*` variables.
 
-When activated, you should see `(.venv)` at the beginning of your terminal prompt.
+The default file is already correct for a fresh XAMPP install:
 
-## Step 2: Install Backend Dependencies
-
-With the virtual environment activated:
-
-```powershell
-pip install -r backend\requirements.txt
+```env
+MYSQL_HOST=127.0.0.1
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=
+MYSQL_DATABASE=inkspeed_db
 ```
 
-This installs Flask, mysql-connector-python, and pytest.
+- `MYSQL_DATABASE=inkspeed_db` is the **fresh-install** database. InkSpeed creates it automatically.
+- `inkspeed_db_recovered` is a local database on the development laptop only. Do **not** use that name on a new computer.
+- If your XAMPP root account has a password, put it in `MYSQL_PASSWORD` (no quotes needed).
+- `.env` is ignored by Git. `.env.example` is the tracked template. Never commit real passwords.
 
-## Step 3: Set Up Environment Configuration
+The backend reads `.env` from the project root (and `backend\.env` if present) every time it starts, but real Windows environment variables take priority over the file. If you edit `.env`, restart the backend/Electron.
 
-The app uses MySQL with defaults that work with a fresh XAMPP installation. You have two options:
+---
 
-**Option A (Recommended for most users):** No `.env` file needed - the app uses safe defaults (`127.0.0.1:3306`, user `root`, empty password, database `inkspeed_db`).
+## 10. Initialize the database and starter data
 
-**Option B (If you customized XAMPP):** If you changed MySQL credentials, create a `.env` file.
+This happens automatically. You do not have to create tables or import SQL.
 
-To create `.env` if needed:
-1. Copy `.env.example` to `.env` in the project root
-2. Edit `.env` with your actual MySQL credentials
-3. **Never commit `.env` to Git** - it's already in `.gitignore`
-
-The backend reads these variables via `os.getenv()` in `backend/database/connection.py`. If the database connection fails, check these values match your XAMPP MySQL setup.
-
-## Step 4: Install and Start XAMPP (MySQL/MariaDB)
-
-1. **Download and install XAMPP** from [apachefriends.org](https://www.apachefriends.org/download.html) if not already installed.
-2. **Open XAMPP Control Panel** (search for "XAMPP Control Panel" in Windows Start Menu).
-3. **Start MySQL/MariaDB**: Click the **Start** button next to "MySQL". Wait until it shows green "Running".
-4. **(Optional) Start Apache**: Only needed if you want to access phpMyAdmin via web, which we will use below. Click Start next to "Apache" if not running.
-
-> **Note:** The default XAMPP MySQL setup uses user `root` with no password on `127.0.0.1:3306`. If you've customized this, adjust your `.env` accordingly.
-
-## Step 5: Create and Import the Database
-
-You need to create the `inkspeed_db` database and import the schema.
-
-### Using phpMyAdmin (Recommended)
-
-1. With Apache and MySQL running in XAMPP, open your browser and go to: [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/)
-2. Click the **"Databases"** tab at the top
-3. Under "Create database", type `inkspeed_db` and select collation `utf8mb4_unicode_ci` (or leave default)
-4. Click **"Create"**
-5. Select the newly created `inkspeed_db` database from the left sidebar
-6. Click the **"Import"** tab at the top
-7. Under "File to import", click **"Choose File"** and select `backend/database/schema.sql` from your project
-8. Scroll down and click **"Go"**
-9. You should see a success message. The tables will be created.
-
-> **Note:** The backend also auto-initializes and migrates the database on startup (see `backend/database/connection.py`). The schema.sql provides the base structure. Running the app will apply additional migrations automatically to ensure all required tables/columns exist.
-
-### Verify Database
-
-In phpMyAdmin, with `inkspeed_db` selected, you should see tables like: `users`, `challenges`, `results`, `round_results`, `achievements`, `user_achievements`, `app_settings`, and additional tables created by migrations.
-
-## Step 6: Install Frontend Dependencies
-
-Open a **second terminal** in VS Code (Terminal → Split Terminal or New Terminal) - keep the backend terminal separate.
-
-Navigate to the frontend folder and install dependencies:
-
-```powershell
-cd frontend
-npm install
-```
-
-This may take a few minutes. Wait for it to complete successfully.
-
-## Step 7: Run the Application
-
-You need **two terminals** running simultaneously - one for the backend, one for the frontend.
-
-### Terminal 1 - Backend API
-
-In your first terminal (project root), with virtual environment activated:
+To initialize and verify it manually, from the project root:
 
 ```powershell
 .\backend\.venv\Scripts\python.exe .\backend\main.py
 ```
 
-You should see output indicating the server is running. The API will be available at:
-- **API Base**: `http://127.0.0.1:5000`
-- **Health Check**: `http://127.0.0.1:5000/api/health`
+Expected output (order may vary slightly):
 
-Leave this terminal running.
+```text
+INFO database.connection: Preparing database `inkspeed_db`.
+INFO database.connection: Database `inkspeed_db` is ready.
+ * Running on http://127.0.0.1:5000
+ * Debug mode: off
+```
 
-### Terminal 2 - Frontend Dev Server
+What happened during those seconds:
 
-In your second terminal, in the frontend directory:
+1. Database `inkspeed_db` was created if it did not exist.
+2. All tables, lookup rows (roles, game modes), indexes, and foreign keys were created.
+3. Achievements were seeded.
+4. The 78 challenges in `backend\database\challenge_seed.json` and their 8 categories were inserted.
+
+The initialization and seeding are idempotent: starting the backend again does **not** duplicate challenges, categories, or achievements.
+
+Stop the manual backend with **Ctrl+C** before launching Electron, so port 5000 is free.
+
+> Flask may print: `Tip: There are .env files present. Install python-dotenv to use them.` You can ignore this. InkSpeed loads `.env` itself in `backend\database\connection.py`; `python-dotenv` is not required.
+
+Verify in a browser: <http://127.0.0.1:5000/api/health>
+
+Expected result: a JSON response `{"ok": true}` while the backend is running.
+
+### Verify the database in phpMyAdmin (browser)
+
+1. Make sure **Apache** and **MySQL** are running in the XAMPP Control Panel.
+2. Open <http://localhost/phpmyadmin/> in a browser.
+3. Click **Databases** → `inkspeed_db`.
+4. Open the **SQL** tab and run:
+
+```sql
+SELECT COUNT(*) AS challenges FROM challenges;
+SELECT COUNT(*) AS categories FROM challenge_categories;
+SELECT COUNT(*) AS users FROM users;
+```
+
+Expected result: **78** challenges, **8** categories, and **0** users on a fresh installation. Users appear only after you create a profile in the game.
+
+> Do not import `database\inkspeed_schema.sql` or `backend\database\seed.sql` by hand on a fresh laptop. The backend performs the schema creation, migrations, and starter-data seed automatically. Those SQL files are legacy/reference files and are not required.
+
+---
+
+## 11. Launch InkSpeed
+
+### Recommended: Electron desktop app
+
+1. Confirm **MySQL is running** in XAMPP.
+2. In the **VS Code PowerShell terminal**, from the project root:
 
 ```powershell
-npm run dev
+.\scripts\run_electron.bat
 ```
 
-Vite will start the dev server. Look for a message like:
-```
-➜  Local:   http://localhost:5173/
-```
-or similar. Open that URL in your web browser.
-
-**InkSpeed should now be running!** You can create users, play games, and all data will be saved to your local MySQL database.
-
-## Running as a Desktop App (Optional)
-
-If you want to run InkSpeed as a standalone desktop application using Electron:
-
-1. Make sure MySQL is running in XAMPP
-2. Dependencies are installed (backend venv + frontend node_modules)
-3. From the `frontend` folder in a terminal:
+Or, equivalently:
 
 ```powershell
+cd .\frontend
 npm run electron
 ```
 
-The Electron app will automatically start the backend API and the Vite dev server, wait for them to be ready, then open the desktop window.
+Expected result: the InkSpeed desktop window opens. The launcher starts the Flask backend on port 5000 and its own Vite server on port **5174**, waits for both, then opens the window. First launch can take 30–60 seconds while Vite starts.
 
-## Everyday Startup (After First-Time Setup)
+The Electron launcher notes:
 
-Once everything is set up, you only need these steps for daily use:
+- If a healthy InkSpeed backend is already running on port 5000, it reuses it.
+- If a healthy InkSpeed Vite server is already running on port 5174, it reuses it and leaves it running after the window closes.
+- Processes started by the window are stopped when the window closes.
+- If port 5174 or 5000 is held by something else, an error dialog explains how to find the owner. See [Troubleshooting](#15-troubleshooting).
 
-1. **Start XAMPP**: Open XAMPP Control Panel and start **MySQL** (and Apache if needed)
-2. **Start Backend**: Open terminal in project root, activate venv (`.\backend\.venv\Scripts\Activate.ps1`), run `.\backend\.venv\Scripts\python.exe .\backend\main.py`
-3. **Start Frontend**: Open another terminal in `frontend/`, run `npm run dev`
-4. **Open Browser**: Go to `http://localhost:5173` (or the URL shown)
+### Alternative: browser mode (two terminals)
 
-Or use Electron: Just start MySQL in XAMPP, then run `npm run electron` from the `frontend` folder.
+**Terminal 1 — backend** (project root):
 
-## Where Data is Stored
+```powershell
+.\backend\.venv\Scripts\python.exe .\backend\main.py
+```
 
-| Data Type | Location |
+**Terminal 2 — frontend** (new terminal, project root):
+
+```powershell
+cd .\frontend
+npm run dev
+```
+
+Open the URL printed by Vite, normally <http://localhost:5173/>. Keep both terminals running; stop them with **Ctrl+C**.
+
+The frontend always calls the API at `http://127.0.0.1:5000/api` unless `VITE_API_URL` is set in `frontend\.env`.
+
+---
+
+## 12. Test the game
+
+1. **Create a profile**: enter a username (4–20 characters; letters, numbers, `_`, `.`, `-`) and confirm. It appears in the header/profile list.
+2. **Play Classic**: choose Classic and a difficulty, type the passage, finish the round.
+3. **Save the result**: the result screen shows WPM, accuracy, errors, and score. Confirm it saved without an error.
+4. **Check history**: open the history/dashboard view; the result you just saved must appear.
+5. **Play Memory Rush**: complete at least one round and save it.
+6. **Play Key Chaos**: complete a round and save it.
+7. **Check achievements**: the result screen or profile should show unlocked achievements (for example *First Ink* after the first saved result).
+8. **Check database**: refresh phpMyAdmin and confirm rows now exist in `results`, `round_results`, `user_achievements`, and `personal_bests`. The `challenges` table must still contain **78** rows (playing the game does not add or remove challenges).
+
+---
+
+## 13. Close InkSpeed safely
+
+- **Electron**: close the window. The launcher stops the backend and Vite processes that it started.
+- **Browser mode**: press **Ctrl+C** in both terminals.
+- **XAMPP**: leave MySQL running while you present. Stop it from the XAMPP Control Panel only when you are finished.
+
+Reopening the app later requires only: XAMPP MySQL running → `.\scripts\run_electron.bat`.
+
+---
+
+## 14. Everyday startup (after the first setup)
+
+In the **VS Code PowerShell terminal**, from the project root:
+
+```powershell
+.\scripts\run_electron.bat
+```
+
+No reinstall and no database import are needed. The `.venv`, `node_modules`, and `inkspeed_db` database already exist on that laptop.
+
+Other helper scripts (all must be started from the project root and all fix their own working directory):
+
+| Script | Purpose |
 | --- | --- |
-| **User data, results, challenges, achievements** | MySQL/MariaDB database `inkspeed_db` (managed by XAMPP) |
-| **Backend dependencies** | `backend/.venv/` (local, not committed) |
-| **Frontend dependencies** | `frontend/node_modules/` (local, not committed) |
-| **Database backups** | `backend/backups/` if created (excluded from Git) |
+| `scripts\setup.bat` | Creates or updates the venv, installs Python deps, runs `npm ci` |
+| `scripts\run_backend.bat` | Starts only the Flask API on port 5000 |
+| `scripts\run_frontend.bat` | Starts only Vite (browser mode) on port 5173 |
+| `scripts\run_electron.bat` | Starts the full Electron desktop app |
 
-## Stopping the Application Safely
+---
 
-- **Frontend/Backend terminals**: Press `Ctrl+C` in each terminal
-- **Electron app**: Close the window - it will automatically stop the backend and frontend processes
-- **XAMPP**: Stop MySQL (and Apache) from the XAMPP Control Panel when done
+## 15. Troubleshooting
 
-## Troubleshooting
+### `Missing .env` / environment variables are ignored
 
-| Symptom / Error | Likely Cause | How to Diagnose | Step-by-Step Fix | Alternative Solution |
-| --- | --- | --- | --- | --- |
-| `'py' is not recognized` or `'python' not found` | Python not installed or not in PATH | Run `py --version` - if error, Python missing | Reinstall Python from python.org, check "Add Python to PATH" during install. Restart terminal/VS Code. | Use `python` or `py -3` instead, or find Python in its install location. |
-| PowerShell won't activate venv | Execution policy restriction | Try `.\backend\.venv\Scripts\Activate.ps1` and see error | Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` in PowerShell, then try again. | Use Command Prompt (cmd) instead: `backend\.venv\Scripts\activate.bat` |
-| `ModuleNotFoundError: No module named 'flask'` or similar | Dependencies not installed in venv | Check if venv is activated (`(.venv)` in prompt) | Activate venv, run `pip install -r backend\requirements.txt` from project root. | Verify with `pip list` that flask, mysql-connector-python are installed. |
-| `Can't reach the database. Make sure MySQL is running in XAMPP...` | MySQL not running or wrong credentials | Check XAMPP Control Panel - MySQL should be green/running. Try phpMyAdmin. | Start MySQL in XAMPP. Verify database `inkspeed_db` exists. Check defaults match (root, no password). | Create `.env` with correct `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`. Check if MySQL is on different port. |
-| XAMPP MySQL won't start | Port 3306 in use or config issue | Check XAMPP logs, or see if another MySQL is running | Stop other MySQL instances. Check port conflicts. Try changing MySQL port in XAMPP config if needed. | Use different port and update `MYSQL_PORT` in `.env`. |
-| Database `inkspeed_db` doesn't exist | Not created yet | Check phpMyAdmin - database not listed | Create database in phpMyAdmin or let backend auto-create it. Backend calls `initialize_database()` on startup. | Import `backend/database/schema.sql` via phpMyAdmin Import tab. |
-| Tables missing | Schema not imported | Check tables in phpMyAdmin under `inkspeed_db` | Run the app once - backend auto-initializes. Or manually import schema.sql. | The app's `initialize_database()` will create tables and run migrations automatically. |
-| SQL import fails in phpMyAdmin | File too large, encoding issue, or syntax error | Check phpMyAdmin error message | Use the app's auto-initialization (just start backend) instead of manual import. Or split/import differently. | Ensure schema.sql is from the project as-is. The backend is designed to initialize on startup. |
-| `npm install` fails | Network issue or Node version problem | Check Node version with `node --version` | Use Node LTS. Clear npm cache: `npm cache clean --force`. Try again. | Delete `frontend/node_modules` and `frontend/package-lock.json`, run `npm install` again. |
-| `npm run dev` fails or port in use | Port 5173 already in use | Error will say port in use | Kill the process using port 5173, or Vite will suggest another port. | Use `npx kill-port 5173` or stop other dev servers. |
-| Backend port 5000 in use | Another process using port 5000 | Flask will fail to bind | Find and stop the process using port 5000. | Change port in `backend/main.py` and `backend/api_server.py`, update frontend API URL. |
-| Wrong folder opened in VS Code | Opened parent folder | Check - should see `backend/`, `frontend/` directly in explorer root | Close VS Code, open the correct extracted folder that contains README.md at its root. | Verify by looking for `backend/main.py` and `frontend/package.json`. |
-| Electron can't start Python | Wrong path or venv missing | Electron looks for `backend/.venv/Scripts/python.exe` | Create venv and install deps as per Step 1-2. Verify the file exists. | Check `frontend/electron/main.cjs` - it expects the venv at `backend/.venv/`. |
-| App opens but can't load data | Backend not running or DB issue | Check browser console/network tab, backend terminal for errors | Ensure backend is running on port 5000. Check MySQL is running. Test health: `http://127.0.0.1:5000/api/health` | Check CORS - backend allows requests from browser. Verify API URL in frontend defaults to `http://127.0.0.1:5000/api`. |
-| Frontend can't connect to backend | API URL misconfigured | Check `frontend/src/lib/inkspeed.ts` - defaults to `http://127.0.0.1:5000/api` | Ensure backend is running. If needed, set `VITE_API_URL` in frontend `.env`. | Test backend health endpoint directly in browser. |
+The app works with XAMPP defaults even without `.env`, but create it anyway:
 
-## Common Questions
+```powershell
+Copy-Item .env.example .env
+```
 
-**Q: Do I need to install Git?**  
-A: No. For presentation, download as ZIP from GitHub - no Git required.
+`.env` must be in the project root next to `README.md`, not in `backend\` or `frontend\`. Restart the backend after editing it. Windows environment variables override `.env`, so make sure no old `MYSQL_*` variables are set system-wide:
 
-**Q: What's the difference between downloading ZIP and cloning?**  
-A: ZIP downloads all files as-is without Git history. Cloning with `git clone` requires Git installed and creates a `.git` folder. Both work fine; ZIP is easier for non-technical users.
+```powershell
+Get-ChildItem Env:MYSQL_*
+```
 
-**Q: Do I need Apache running?**  
-A: Only if you want to use phpMyAdmin through the browser. The InkSpeed app itself doesn't need Apache - it uses Flask backend directly. MySQL/MariaDB is required though.
+### Wrong database name
 
-**Q: Can I use a different MySQL port or credentials?**  
-A: Yes. Create a `.env` file in the project root (copy from `.env.example`) and set `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE` to match your setup.
+If `MYSQL_DATABASE` is not `inkspeed_db`, InkSpeed creates a database with whatever name is there and seeds it. Check `.env`, then look for that exact name in phpMyAdmin. A fresh laptop should use:
 
-**Q: Will the database be created automatically?**  
-A: The backend's `initialize_database()` function (called by `main.py`) will create the database if it doesn't exist and run schema migrations automatically. However, it's safer to ensure MySQL is running and you can access it. The base schema is in `backend/database/schema.sql`.
+```env
+MYSQL_DATABASE=inkspeed_db
+```
 
-**Q: Do I need to import seed data?**  
-A: Not strictly necessary. The backend has `seed_defaults()` in `database_manager.py` that seeds achievements and some challenges on startup. `seed.sql` provides additional sample data if you want to import it.
+### Connection refused / access denied
 
-**Q: The app says "Can't reach the database" - what do I do?**  
-A: Make sure MySQL is running in XAMPP (green in Control Panel). Verify the database exists. Check that your credentials match (default is root with no password). Try the health check at `http://127.0.0.1:5000/api/health` after starting the backend.
+Typical messages:
 
-## Known Limitations
+```text
+Can't connect to MySQL server on '127.0.0.1' (10061)
+Access denied for user 'root'@'localhost'
+```
 
-- **Windows-focused instructions**: These instructions are written for Windows. Linux/Mac may work but paths and commands differ.
-- **XAMPP dependency**: Designed to work with XAMPP's MySQL/MariaDB setup. Other MySQL servers can work with proper configuration.
-- **Development mode**: Running via `npm run dev` and `main.py` is for development. Not configured for production deployment.
-- **Port assumptions**: Defaults to ports 5000 (backend) and 5173 (frontend). If these are in use, you'll need to adjust.
-- **Virtual environment required**: Backend must run in the Python virtual environment with dependencies installed.
+Fix:
 
-## Additional Notes
+1. Open **XAMPP Control Panel** and confirm **MySQL** is green/running.
+2. Confirm the port in `.env` matches XAMPP (default `3306`).
+3. If you set a MySQL root password, put it in `MYSQL_PASSWORD`.
+4. Test the API again: <http://127.0.0.1:5000/api/health>.
 
-- **Backend tests**: Run with `.\backend\.venv\Scripts\python.exe -m pytest .\backend\tests` from project root
-- **Frontend tests**: Run with `npm test` from `frontend/` folder
-- **Linting**: Run `npm run lint` from `frontend/` folder
-- **The backend auto-migrates**: `initialize_database()` adds missing columns/tables and applies extensions on each startup, so it's safe to run repeatedly.
+The backend prints a clear error and exits instead of starting with a broken database.
 
-**Ready to start?** Follow the steps in order from [Step 1](#step-1-create-and-activate-python-virtual-environment) through [Step 7](#step-7-run-the-application). If you run into issues, check the [Troubleshooting](#troubleshooting) section above.
+### MariaDB will not start / port 3306 is occupied
+
+In an **administrator PowerShell**:
+
+```powershell
+Get-NetTCPConnection -LocalPort 3306 -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess
+Get-Process -Id <PID>
+```
+
+- If the owner is another MySQL/MariaDB service, stop that service (Services app) or change XAMPP's MySQL port.
+- If you change the XAMPP port, update `MYSQL_PORT` in `.env` to the same value.
+- Read the XAMPP MySQL log (`C:\xampp\mysql\data\mysql_error.log`) for the real reason when startup fails.
+
+Do not delete MySQL data files to "fix" startup; that destroys the database.
+
+### Missing tables or error 1932 (`doesn't exist in engine`)
+
+InkSpeed checks for unreadable InnoDB tables before changing anything and stops with:
+
+```text
+MariaDB cannot open table(s) ... (error 1932: "doesn't exist in engine")
+```
+
+`CREATE TABLE IF NOT EXISTS` cannot repair a damaged InnoDB tablespace, so the app refuses to continue rather than silently pretending the table exists.
+
+Fix on the presentation laptop (fresh install, no data to keep):
+
+1. Stop MySQL in XAMPP.
+2. In phpMyAdmin (Apache + MySQL running), drop the broken database, or simply set a new name in `.env` (for example `MYSQL_DATABASE=inkspeed_db_new`).
+3. Start the backend again — it creates the full schema and seeds 78 challenges.
+
+On a machine with data you need, restore the database from a SQL dump/backup instead of dropping it. Keep the damaged files until the data has been reviewed.
+
+### Missing Python or Node.js dependencies
+
+- Python: `ModuleNotFoundError: No module named 'flask'` → from the project root:
+
+  ```powershell
+  .\backend\.venv\Scripts\Activate.ps1
+  python -m pip install -r backend\requirements.txt
+  ```
+
+- Node: `Cannot find module ...` or `vite is not recognized` → from the project root:
+
+  ```powershell
+  cd .\frontend
+  npm ci
+  cd ..
+  ```
+
+### Incompatible Node.js version
+
+Vite 8.1.5 requires Node `^20.19.0 || >=22.12.0`. Symptoms include engine warnings/errors and startup crashes.
+
+```powershell
+node --version
+```
+
+If it prints `v18.x` or `v20.x` below `20.19`, install the current Node.js LTS from <https://nodejs.org/>, close VS Code, reopen it, and run `npm ci` again.
+
+### Port 5174 is already in use (Electron)
+
+This means a previous Vite dev server is still running. The Electron launcher will not kill a process it cannot prove it owns, so stop the old process manually:
+
+```powershell
+Get-NetTCPConnection -LocalPort 5174 -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess
+Get-Process -Id <PID>
+Stop-Process -Id <PID>
+```
+
+Do the same for port 5000 if the dialog reports the API port. Only stop a PID whose process path/name clearly belongs to Node/Vite or Python/InkSpeed. Do not kill unrelated applications.
+
+To avoid the conflict, close old InkSpeed windows and terminals, and do not run two copies of the app at once. In browser mode Vite uses port 5173, so it does not collide with Electron's 5174.
+
+### Incorrect project or working directory
+
+Symptoms: `backend\main.py was not found`, `backend\.venv not found`, `Could not read the challenge starter data ...`, or `npm` errors about a missing `package.json`.
+
+Check:
+
+```powershell
+Get-Location
+Test-Path .\backend\main.py
+Test-Path .\frontend\package.json
+```
+
+Both `Test-Path` commands must print `True`. If not, run `cd` into the extracted folder that contains `backend`, `frontend`, and `README.md`, or double-click `scripts\setup.bat` from that folder.
+
+### The window opens but shows no data
+
+1. Check <http://127.0.0.1:5000/api/health>.
+2. Look at the terminal/Electron console for Python errors.
+3. Confirm MySQL is running and `.env` points at the right database.
+4. Restart the app after fixing `.env`.
+
+---
+
+## 16. Project structure
+
+```text
+InkSpeed-Main-main\
+├── backend\
+│   ├── api_server.py              Flask routes
+│   ├── main.py                    Initializes DB + seeds + starts API on 5000
+│   ├── requirements.txt           Python dependencies
+│   ├── database\
+│   │   ├── connection.py          .env loader, DB creation, migrations, health checks
+│   │   ├── database_manager.py    Repository layer + seeding
+│   │   ├── challenge_seed.json    Portable 78-challenge starter library
+│   │   ├── schema.sql             Base schema (applied automatically)
+│   │   └── seed.sql               Legacy sample SQL (not needed for fresh install)
+│   ├── migrations\                Additive schema migrations
+│   └── models\                    Domain models (users, challenges, results)
+├── frontend\
+│   ├── electron\main.cjs          Desktop launcher (ports 5000 + 5174)
+│   ├── src\                       React application
+│   ├── package.json
+│   └── package-lock.json          Committed lockfile used by npm ci
+├── database\                      Legacy reference SQL files
+├── scripts\                       setup.bat / run_*.bat helpers
+├── .env.example                   Tracked configuration template
+├── .gitignore
+└── README.md
+```
+
+Not included in the ZIP (created locally): `.env`, `backend\.venv\`, `frontend\node_modules\`.
+
+---
+
+## 17. Development notes
+
+- Backend tests: this snapshot does not include a `backend\tests` folder, so `pytest` collects no tests. Do not treat a bare `pytest` run as verification.
+- Frontend tests: `npm test` runs `vitest run`; this snapshot does not include test files, so it exits with “No test files found”.
+- Linting: `cd frontend; npm run lint`.
+- Database initialization is additive and safe to rerun. It never drops existing tables or user data.
+- The challenge library is read from `backend\database\challenge_seed.json` at startup. Editing that file and restarting the backend adds new passages (matched by passage text) without duplicating existing ones.
+
+---
+
+## 18. Quick checklist for presentation day
+
+- [ ] XAMPP Control Panel: MySQL is green.
+- [ ] `C:\...\InkSpeed-Main-main\.env` exists with `MYSQL_DATABASE=inkspeed_db`.
+- [ ] `backend\.venv\Scripts\python.exe` exists.
+- [ ] `frontend\node_modules` exists.
+- [ ] `.\scripts\run_electron.bat` opens the window.
+- [ ] A test profile can save a Classic result and show it in history.
+- [ ] phpMyAdmin shows 78 challenges and 8 categories.
+
+If any item fails, see the matching troubleshooting section before the presentation.

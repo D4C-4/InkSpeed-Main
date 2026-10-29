@@ -1,0 +1,470 @@
+[
+  {
+    "category": "Proverbs",
+    "difficulty": "easy",
+    "text": "The early bird catches the worm.",
+    "passage_text": "The early bird catches the worm."
+  },
+  {
+    "category": "Proverbs",
+    "difficulty": "easy",
+    "text": "Practice makes perfect, so keep on typing.",
+    "passage_text": "Practice makes perfect, so keep on typing."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "The river runs quietly past the old stone bridge.",
+    "passage_text": "The river runs quietly past the old stone bridge."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "medium",
+    "text": "Morning fog drifted over the hills while the birds began their song.",
+    "passage_text": "Morning fog drifted over the hills while the birds began their song."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "A good program is written for people to read and only incidentally for machines to run.",
+    "passage_text": "A good program is written for people to read and only incidentally for machines to run."
+  },
+  {
+    "category": "Literature",
+    "difficulty": "medium",
+    "text": "Ink spilled across the page like a story that refused to wait its turn.",
+    "passage_text": "Ink spilled across the page like a story that refused to wait its turn."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "hard",
+    "text": "Encapsulation, inheritance, polymorphism, and abstraction form the pillars of object-oriented design.",
+    "passage_text": "Encapsulation, inheritance, polymorphism, and abstraction form the pillars of object-oriented design."
+  },
+  {
+    "category": "Science",
+    "difficulty": "hard",
+    "text": "Photosynthesis converts light energy into chemical energy, releasing oxygen as a by-product.",
+    "passage_text": "Photosynthesis converts light energy into chemical energy, releasing oxygen as a by-product."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "Computers help people do work faster.",
+    "passage_text": "Computers help people do work faster."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "A mouse is used to click icons on a screen.",
+    "passage_text": "A mouse is used to click icons on a screen."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "Typing every day improves your speed.",
+    "passage_text": "Typing every day improves your speed."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "The internet connects people worldwide.",
+    "passage_text": "The internet connects people worldwide."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "Saving files prevents data loss.",
+    "passage_text": "Saving files prevents data loss."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "Good passwords protect your account.",
+    "passage_text": "Good passwords protect your account."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "A keyboard has many useful keys.",
+    "passage_text": "A keyboard has many useful keys."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "Software helps hardware perform tasks.",
+    "passage_text": "Software helps hardware perform tasks."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "easy",
+    "text": "Learning computers opens many opportunities.",
+    "passage_text": "Learning computers opens many opportunities."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Birds sing early in the morning.",
+    "passage_text": "Birds sing early in the morning."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Trees provide shade during hot days.",
+    "passage_text": "Trees provide shade during hot days."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Rain helps plants grow healthy.",
+    "passage_text": "Rain helps plants grow healthy."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "The river flows quietly downstream.",
+    "passage_text": "The river flows quietly downstream."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Flowers bloom during spring seasons.",
+    "passage_text": "Flowers bloom during spring seasons."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Mountains stand tall against the sky.",
+    "passage_text": "Mountains stand tall against the sky."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Leaves change color in autumn.",
+    "passage_text": "Leaves change color in autumn."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "The sun rises every morning.",
+    "passage_text": "The sun rises every morning."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Fresh air improves our mood.",
+    "passage_text": "Fresh air improves our mood."
+  },
+  {
+    "category": "Nature",
+    "difficulty": "easy",
+    "text": "Oceans cover most of Earth.",
+    "passage_text": "Oceans cover most of Earth."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "Reading books increases knowledge.",
+    "passage_text": "Reading books increases knowledge."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "Students attend classes daily.",
+    "passage_text": "Students attend classes daily."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "Practice leads to better results.",
+    "passage_text": "Practice leads to better results."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "Learning requires patience and effort.",
+    "passage_text": "Learning requires patience and effort."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "Teachers guide students to success.",
+    "passage_text": "Teachers guide students to success."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "School activities develop teamwork.",
+    "passage_text": "School activities develop teamwork."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "Writing helps express ideas clearly.",
+    "passage_text": "Writing helps express ideas clearly."
+  },
+  {
+    "category": "Education",
+    "difficulty": "easy",
+    "text": "Knowledge grows through experience.",
+    "passage_text": "Knowledge grows through experience."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Cloud storage allows users to access files from different devices without carrying physical storage media.",
+    "passage_text": "Cloud storage allows users to access files from different devices without carrying physical storage media."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Artificial intelligence can analyze large amounts of information and detect patterns quickly.",
+    "passage_text": "Artificial intelligence can analyze large amounts of information and detect patterns quickly."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Programmers use different languages to create websites, applications, and software solutions.",
+    "passage_text": "Programmers use different languages to create websites, applications, and software solutions."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Cybersecurity protects systems from unauthorized access, malware, and online threats.",
+    "passage_text": "Cybersecurity protects systems from unauthorized access, malware, and online threats."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Regular software updates improve performance and fix known security vulnerabilities.",
+    "passage_text": "Regular software updates improve performance and fix known security vulnerabilities."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Databases efficiently store and organize information for businesses and applications.",
+    "passage_text": "Databases efficiently store and organize information for businesses and applications."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Automation reduces repetitive tasks and increases workplace productivity.",
+    "passage_text": "Automation reduces repetitive tasks and increases workplace productivity."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Digital transformation changes how organizations operate and serve customers.",
+    "passage_text": "Digital transformation changes how organizations operate and serve customers."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "medium",
+    "text": "Many businesses rely on technology to remain competitive in modern markets.",
+    "passage_text": "Many businesses rely on technology to remain competitive in modern markets."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Exercising regularly helps improve cardiovascular health, strength, and mental well-being.",
+    "passage_text": "Exercising regularly helps improve cardiovascular health, strength, and mental well-being."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "A balanced diet includes fruits, vegetables, proteins, and whole grains.",
+    "passage_text": "A balanced diet includes fruits, vegetables, proteins, and whole grains."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Drinking enough water supports important bodily functions and overall health.",
+    "passage_text": "Drinking enough water supports important bodily functions and overall health."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Quality sleep helps the brain process information and restore energy.",
+    "passage_text": "Quality sleep helps the brain process information and restore energy."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Stress management techniques can improve focus and emotional stability.",
+    "passage_text": "Stress management techniques can improve focus and emotional stability."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Healthy habits established early often lead to long-term benefits.",
+    "passage_text": "Healthy habits established early often lead to long-term benefits."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Walking daily is a simple way to improve physical fitness.",
+    "passage_text": "Walking daily is a simple way to improve physical fitness."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Proper nutrition contributes to growth, recovery, and energy levels.",
+    "passage_text": "Proper nutrition contributes to growth, recovery, and energy levels."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Mental health is as important as physical health.",
+    "passage_text": "Mental health is as important as physical health."
+  },
+  {
+    "category": "Health",
+    "difficulty": "medium",
+    "text": "Small lifestyle changes can create significant improvements over time.",
+    "passage_text": "Small lifestyle changes can create significant improvements over time."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Students who review lessons regularly often perform better on examinations.",
+    "passage_text": "Students who review lessons regularly often perform better on examinations."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Critical thinking helps individuals evaluate information and make informed decisions.",
+    "passage_text": "Critical thinking helps individuals evaluate information and make informed decisions."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Group projects encourage collaboration and communication among classmates.",
+    "passage_text": "Group projects encourage collaboration and communication among classmates."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Time management allows students to balance studies and personal responsibilities.",
+    "passage_text": "Time management allows students to balance studies and personal responsibilities."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Research skills are essential for academic and professional success.",
+    "passage_text": "Research skills are essential for academic and professional success."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Learning from mistakes helps build resilience and confidence.",
+    "passage_text": "Learning from mistakes helps build resilience and confidence."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Classroom discussions expose students to diverse perspectives and ideas.",
+    "passage_text": "Classroom discussions expose students to diverse perspectives and ideas."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Effective note-taking improves understanding and information retention.",
+    "passage_text": "Effective note-taking improves understanding and information retention."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Setting goals provides direction and motivation for achievement.",
+    "passage_text": "Setting goals provides direction and motivation for achievement."
+  },
+  {
+    "category": "Education",
+    "difficulty": "medium",
+    "text": "Education empowers people to contribute positively to society.",
+    "passage_text": "Education empowers people to contribute positively to society."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "hard",
+    "text": "Advances in artificial intelligence are transforming industries by automating decision-making processes and optimizing operational efficiency across multiple sectors.",
+    "passage_text": "Advances in artificial intelligence are transforming industries by automating decision-making processes and optimizing operational efficiency across multiple sectors."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "hard",
+    "text": "Distributed database architectures enhance system reliability by ensuring data remains accessible despite hardware failures or network disruptions.",
+    "passage_text": "Distributed database architectures enhance system reliability by ensuring data remains accessible despite hardware failures or network disruptions."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "hard",
+    "text": "Effective cybersecurity strategies require continuous monitoring, threat assessment, employee awareness, and rapid incident response procedures.",
+    "passage_text": "Effective cybersecurity strategies require continuous monitoring, threat assessment, employee awareness, and rapid incident response procedures."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "hard",
+    "text": "Machine learning algorithms improve prediction accuracy when trained on large datasets containing diverse and relevant information.",
+    "passage_text": "Machine learning algorithms improve prediction accuracy when trained on large datasets containing diverse and relevant information."
+  },
+  {
+    "category": "Technology",
+    "difficulty": "hard",
+    "text": "Organizations adopting digital transformation initiatives often experience significant improvements in productivity, scalability, and customer engagement.",
+    "passage_text": "Organizations adopting digital transformation initiatives often experience significant improvements in productivity, scalability, and customer engagement."
+  },
+  {
+    "category": "Science",
+    "difficulty": "hard",
+    "text": "Scientific discoveries frequently emerge through systematic experimentation, rigorous analysis, and the careful validation of results.",
+    "passage_text": "Scientific discoveries frequently emerge through systematic experimentation, rigorous analysis, and the careful validation of results."
+  },
+  {
+    "category": "Science",
+    "difficulty": "hard",
+    "text": "Climate change affects ecosystems worldwide, influencing weather patterns, biodiversity, and natural resource availability.",
+    "passage_text": "Climate change affects ecosystems worldwide, influencing weather patterns, biodiversity, and natural resource availability."
+  },
+  {
+    "category": "Science",
+    "difficulty": "hard",
+    "text": "Renewable energy technologies reduce dependence on fossil fuels while supporting long-term environmental sustainability.",
+    "passage_text": "Renewable energy technologies reduce dependence on fossil fuels while supporting long-term environmental sustainability."
+  },
+  {
+    "category": "Science",
+    "difficulty": "hard",
+    "text": "Space exploration expands human understanding of the universe and inspires technological innovation.",
+    "passage_text": "Space exploration expands human understanding of the universe and inspires technological innovation."
+  },
+  {
+    "category": "Science",
+    "difficulty": "hard",
+    "text": "Researchers continuously investigate complex biological mechanisms to improve medical treatments and healthcare outcomes.",
+    "passage_text": "Researchers continuously investigate complex biological mechanisms to improve medical treatments and healthcare outcomes."
+  },
+  {
+    "category": "Business",
+    "difficulty": "hard",
+    "text": "Successful organizations adapt to changing market conditions through innovation, strategic planning, and effective leadership.",
+    "passage_text": "Successful organizations adapt to changing market conditions through innovation, strategic planning, and effective leadership."
+  },
+  {
+    "category": "Business",
+    "difficulty": "hard",
+    "text": "Data-driven decision-making enables businesses to identify opportunities, minimize risks, and improve operational performance.",
+    "passage_text": "Data-driven decision-making enables businesses to identify opportunities, minimize risks, and improve operational performance."
+  },
+  {
+    "category": "Business",
+    "difficulty": "hard",
+    "text": "Effective communication strengthens workplace relationships and supports successful project execution.",
+    "passage_text": "Effective communication strengthens workplace relationships and supports successful project execution."
+  },
+  {
+    "category": "Business",
+    "difficulty": "hard",
+    "text": "Financial planning helps organizations allocate resources efficiently and achieve long-term objectives",
+    "passage_text": "Financial planning helps organizations allocate resources efficiently and achieve long-term objectives"
+  }
+]

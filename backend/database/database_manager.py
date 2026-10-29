@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 import json
+from pathlib import Path
 from typing import Any
 
 from mysql.connector import IntegrityError
@@ -492,8 +493,6 @@ def add_challenge(
         _audit(cursor, actor_user_id, "CREATE", "challenges",
                int(row["challenge_id"]), {"category": category})
         conn.commit()
-        raise RuntimeError(
-            "Challenge was inserted but could not be reloaded.")
         return _challenge_from_row(row)
     finally:
         cursor.close()
@@ -631,19 +630,18 @@ def save_result(
             """
             INSERT INTO results
                 (user_id, mode, mode_id, wpm, accuracy, errors, score,
-                 duration_seconds, rounds, rounds_completed)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                 duration_seconds, rounds)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
                 user_id,
                 draft.mode.value,
-                MODE_IDS[draft.mode.value],
+                mode_id,
                 draft.wpm,
                 draft.accuracy,
                 draft.errors,
                 score,
                 draft.duration_seconds,
-                draft.rounds,
                 draft.rounds,
             ),
         )
@@ -908,37 +906,86 @@ def seed_achievements() -> None:
         conn.close()
 
 
+SEED_CHALLENGES_PATH = Path(__file__).with_name("challenge_seed.json")
+
+
+def _load_seed_challenges() -> list[dict[str, Any]]:
+    """Read and validate the portable challenge library shipped with the app."""
+    try:
+        raw_entries = json.loads(SEED_CHALLENGES_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError(
+            f"Could not read the challenge starter data at {SEED_CHALLENGES_PATH}: {error}"
+        ) from error
+    if not isinstance(raw_entries, list) or not raw_entries:
+        raise RuntimeError(
+            f"The challenge starter data at {SEED_CHALLENGES_PATH} is empty or invalid."
+        )
+
+    entries: list[dict[str, Any]] = []
+    seen_texts: set[str] = set()
+    for index, raw_entry in enumerate(raw_entries, start=1):
+        if not isinstance(raw_entry, dict):
+            raise RuntimeError(
+                f"Challenge starter entry #{index} in {SEED_CHALLENGES_PATH} is not an object."
+            )
+        category = str(raw_entry.get("category", "")).strip()
+        text = str(raw_entry.get("text", "")).strip()
+        passage_text = str(raw_entry.get("passage_text") or text).strip()
+        difficulty_value = str(raw_entry.get("difficulty", "")).strip().lower()
+        try:
+            difficulty = Difficulty(difficulty_value)
+        except ValueError as error:
+            raise RuntimeError(
+                f"Challenge starter entry #{index} has an invalid difficulty "
+                f"({difficulty_value!r}). Expected easy, medium, or hard."
+            ) from error
+        if not category or not text:
+            raise RuntimeError(
+                f"Challenge starter entry #{index} is missing a category or text."
+            )
+        if text in seen_texts:
+            raise RuntimeError(
+                f"Challenge starter entry #{index} duplicates a passage already in the library."
+            )
+        seen_texts.add(text)
+        entries.append(
+            {
+                "category": category,
+                "difficulty": difficulty.value,
+                "text": text,
+                "passage_text": passage_text,
+                "is_active": bool(raw_entry.get("is_active", True)),
+            }
+        )
+    return entries
+
+
 def seed_challenges() -> None:
+    """Insert the starter challenge library without duplicating existing passages."""
+    entries = _load_seed_challenges()
     conn = connect_db()
     cursor = conn.cursor(dictionary=True)
     try:
-        for category, difficulty, text in (
-            ("Proverbs", Difficulty.EASY, "The early bird catches the worm."),
-            ("Proverbs", Difficulty.EASY,
-             "Practice makes perfect, so keep on typing."),
-            ("Nature", Difficulty.EASY,
-             "The river runs quietly past the old stone bridge."),
-            ("Nature", Difficulty.MEDIUM,
-             "Morning fog drifted over the hills while the birds began their song."),
-            ("Technology", Difficulty.MEDIUM,
-             "A good program is written for people to read and only incidentally for machines to run."),
-            ("Literature", Difficulty.MEDIUM,
-             "Ink spilled across the page like a story that refused to wait its turn."),
-            ("Technology", Difficulty.HARD,
-             "Encapsulation, inheritance, polymorphism, and abstraction form the pillars of object-oriented design."),
-            ("Science", Difficulty.HARD,
-             "Photosynthesis converts light energy into chemical energy, releasing oxygen as a by-product."),
-        ):
-            category_id = _category_id(cursor, category)
+        for entry in entries:
+            category_id = _category_id(cursor, entry["category"])
             cursor.execute(
                 """
-                INSERT INTO challenges (category_id, category, difficulty, text, passage_text)
-                SELECT %s, %s, %s, %s, %s
+                INSERT INTO challenges (category_id, category, difficulty, text, passage_text, is_active)
+                SELECT %s, %s, %s, %s, %s, %s
                 WHERE NOT EXISTS (
                     SELECT 1 FROM challenges WHERE text = %s
                 )
                 """,
-                (category_id, category, difficulty.value, text, text, text),
+                (
+                    category_id,
+                    entry["category"],
+                    entry["difficulty"],
+                    entry["text"],
+                    entry["passage_text"],
+                    1 if entry["is_active"] else 0,
+                    entry["text"],
+                ),
             )
         conn.commit()
     finally:
